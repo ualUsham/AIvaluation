@@ -6,6 +6,7 @@ import Head from './myComponents/Head.js';
 import Home from "./myComponents/home.js";
 import Profile from "./myComponents/profile.js";
 import Analyse from "./myComponents/Analyse.js";
+import Interview from "./myComponents/Interview.js";
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
         <Route path="/home" element={<Home/>}/>
         <Route path="/profile" element={<Profile/>}/>
         <Route path="/analyse" element={<Analyse/>}/>
+        <Route path="/interview" element={<Interview/>}/>
       </Routes>
     </BrowserRouter>
   );
