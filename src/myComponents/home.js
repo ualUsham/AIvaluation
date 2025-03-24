@@ -1,17 +1,16 @@
-import React, { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { signOut } from "firebase/auth";
 import { auth } from "./firebase";
 import { toast, ToastContainer } from 'react-toastify';
 
 const Home = () => {
-  const [file, setFile] = useState(null)
+  const [file, setFile] = useState(null);
   const navigate = useNavigate();
 
-  //signout
+  // Sign out
   const handleSubmit = async () => {
     const confirmLogout = window.confirm("Are you sure you want to sign out?");
-
     if (confirmLogout) {
       try {
         await signOut(auth);
@@ -20,79 +19,83 @@ const Home = () => {
         alert(error.message);
       }
     }
-  }
-
-  //upload file from device
-  const handleFileChange = (e) => {
-    setFile(e.target.files[0]);
   };
 
-  //file upload to backend
-  const handleUpload = async (e) => {
-    e.preventDefault();
+  // Handle file selection and auto-submit
+  const handleFileChange = async (e) => {
+    const selectedFile = e.target.files[0];
+    if (!selectedFile) return;
+    
+    setFile(selectedFile);
+    
+    // Automatically submit the form
+    await handleUpload(selectedFile);
+  };
 
-    if (!file) {
+  // File upload to backend
+  const handleUpload = async (selectedFile) => {
+    if (!selectedFile) {
       alert("No file uploaded");
       return;
     }
 
     const formData = new FormData();
-    formData.append('resume', file);
+    formData.append('resume', selectedFile);
 
     try {
-      const response = await fetch("http://localhost:5000/upload", { method: 'POST', body: formData });
-      // const result = await response.text();
-      toast.success("Pdf file uploaded successfully!! Redirecting...", { position: "top-center" });
-      setFile(false);
-      await new Promise((resolve) => { setTimeout(resolve, 3000) });
-      navigate('/analyse');
+      await fetch("http://localhost:5000/upload", { 
+        method: 'POST', 
+        body: formData 
+      });
 
+      toast.success("PDF uploaded successfully! Redirecting...", { position: "top-center" });
+      await new Promise((resolve) => setTimeout(resolve, 3000));
+      setFile(null);
+      navigate('/analyse');
     } catch (error) {
       alert(`Upload failed: ${error.message}`);
     }
-
-  }
+  };
 
   return (
     <>
-      {/* profile icon*/}
+      {/* Profile icon */}
       <div>
-        <button class="btn position-absolute top-0 end-0 mt-4 me-3" type="button" data-bs-toggle="offcanvas" data-bs-target="#staticBackdrop" aria-controls="staticBackdrop">
-          <i class="fa-solid fa-user fa-2xl" style={{ color: "white" }}></i>
+        <button className="btn position-absolute top-0 end-0 mt-4 me-3" type="button" data-bs-toggle="offcanvas" data-bs-target="#staticBackdrop">
+          <i className="fa-solid fa-user fa-2xl" style={{ color: "white" }}></i>
         </button>
-        <div class="offcanvas offcanvas-end" data-bs-backdrop="static" tabindex="-1" id="staticBackdrop" aria-labelledby="staticBackdropLabel">
-          <div class="offcanvas-header">
-            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        <div className="offcanvas offcanvas-end" data-bs-backdrop="static" id="staticBackdrop">
+          <div className="offcanvas-header">
+            <button type="button" className="btn-close" data-bs-dismiss="offcanvas"></button>
           </div>
-          <div class="offcanvas-body">
+          <div className="offcanvas-body">
             <Link className='btn' to="/profile">Profile</Link>
-            <br></br>
             <hr />
             <button className="btn" onClick={handleSubmit}>Sign Out</button>
             <hr />
           </div>
         </div>
       </div>
+
       {/* Home content */}
-      <div className='d-flex'>
-        <div className='w-50'>
-          <h1>Evaluate Your Interview Preparation Just by Uploading your Resume</h1>
-          <p>File must be in .pdf format. Remember we do not store information about your resume and information is used
-            only to analyse and ask interview questions !!
-          </p>
+      <div className="container mt-5 text-center">
+        <h1 className="fs-1 fw-bolder">Evaluate Your Interview Preparation with AI</h1>
+        <p className="lead">Just upload your resume and get an AI-powered interview assessment !!</p>
+        <br/>
+        <div className="d-flex justify-content-center">
+          <ToastContainer />
+          <label className="btn btn-dark rounded-4 px-5 py-3 fs-3 fw-bold">
+            {file ? "Uploading..." : "Upload Resume"}
+            <input type="file" accept=".pdf" onChange={handleFileChange} hidden disabled={file} />
+          </label>
         </div>
-        <div className=''>
-          < ToastContainer/>
-          <h2>Upload Resume</h2>
-          <form onSubmit={handleUpload}>
-            <input type="file" accept=".pdf" onChange={handleFileChange} />
-            <button type='submit' className='btn btn-primary' disabled={!file}>Upload</button>
-          </form>
-        </div>
+        <br/>
+        <p className="text-muted mt-3">
+          ** File must be in <strong>.pdf</strong> format. We do <strong>not</strong> store your file and is used only for analysis and question generation.
+        </p>
       </div>
-
     </>
-  )
-}
+  );
+};
 
-export default Home
+export default Home;
