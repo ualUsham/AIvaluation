@@ -26,7 +26,7 @@ const Evaluate = () => {
         // Send answers to backend for evaluation
         const fetchResult = async () => {
             try {
-                const response = await fetch('http://localhost:5000/evaluate', {
+                const response = await fetch('https://aivaluation.onrender.com/evaluate', {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({ questions, answers })

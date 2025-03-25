@@ -43,7 +43,7 @@ const Home = () => {
     formData.append('resume', selectedFile);
 
     try {
-      await fetch("http://localhost:5000/upload", { 
+      await fetch("https://aivaluation.onrender.com/upload", { 
         method: 'POST', 
         body: formData 
       });

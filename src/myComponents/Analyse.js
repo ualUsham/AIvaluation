@@ -12,7 +12,7 @@ const Analyse = () => {
 
         const fetchAnalysis = async () => {
             try {
-                const response = await fetch('http://localhost:5000/analyse');
+                const response = await fetch('https://aivaluation.onrender.com/analyse');
                 const result = await response.json();
 
                 if (result.geminiAnalysis) {
