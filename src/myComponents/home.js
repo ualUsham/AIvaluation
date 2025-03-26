@@ -54,6 +54,7 @@ const Home = () => {
       navigate('/analyse');
     } catch (error) {
       alert(`Upload failed: ${error.message}`);
+      setFile(null);
     }
   };
 

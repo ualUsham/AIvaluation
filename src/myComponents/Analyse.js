@@ -9,41 +9,56 @@ const Analyse = () => {
     useEffect(() => {
         if (fetched.current) return; 
         fetched.current = true;
-
+    
         const fetchAnalysis = async () => {
             try {
                 const response = await fetch('https://aivaluation.onrender.com/analyse');
+                
+                // Ensure response is valid JSON
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+    
                 const result = await response.json();
-
+    
+                console.log("API Response:", result); //  Debugging response
+    
+                // Validate response structure
                 if (result.geminiAnalysis) {
                     sessionStorage.setItem('summary', result.geminiAnalysis);
+                    setSummary(result.geminiAnalysis);
+                } else {
+                    throw new Error("geminiAnalysis not found in response");
                 }
-                setSummary(sessionStorage.getItem('summary'));
-
-                const allQuestions = result.questions;
-                try {
-                    const jsonMatch = allQuestions.match(/\[.*\]/s);
-
-                    if (jsonMatch) {
-                        const validJson = jsonMatch[0];
-                        const questionsArray = JSON.parse(validJson);
-                        questionsArray.forEach((question, index) => {
-                            sessionStorage.setItem(`question${index + 1}`, question);
-                        });
-                    } else {
-                        console.error("No valid JSON array found.");
+    
+                if (result.questions) {
+                    try {
+                        console.log("Raw Questions:", result.questions); // ✅ Debugging questions response
+    
+                        // Ensure result.questions is a proper JSON array
+                        if (Array.isArray(result.questions)) {
+                            result.questions.forEach((question, index) => {
+                                sessionStorage.setItem(`question${index + 1}`, question);
+                            });
+                        } else {
+                            console.error("Questions format is incorrect:", result.questions);
+                        }
+                    } catch (error) {
+                        console.error("Error parsing questions JSON:", error);
                     }
-                } catch (error) {
-                    console.error("Error parsing JSON:", error);
+                } else {
+                    console.warn("No questions found in API response.");
                 }
-
+    
             } catch (error) {
+                console.error("Error fetching analysis:", error);
                 setSummary(`Error fetching analysis: ${error.message}`);
             }
         };
-
+    
         fetchAnalysis();
     }, []);
+    
 
     const handleInterview = () => {
         navigate('/interview');
