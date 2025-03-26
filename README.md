@@ -2,7 +2,7 @@
 
 This repository contains the frontend code for my interview app **AIvaluation**, which analyzes resumes using Google's Gemini API and provides an interview experience.
 
-**AIvaluation** : https://aivaluation.vercel.app/home . 
+**AIvaluation** : https://aivaluation.vercel.app . 
 
 I have deployed the backend separately on https://aivaluation.onrender.com . So, no need to set up for the backend.
 
