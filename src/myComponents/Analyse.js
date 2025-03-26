@@ -7,58 +7,48 @@ const Analyse = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        if (fetched.current) return; 
+        if (fetched.current) return;
         fetched.current = true;
-    
+
         const fetchAnalysis = async () => {
             try {
                 const response = await fetch('https://aivaluation.onrender.com/analyse');
-                
-                // Ensure response is valid JSON
+                //display error if no text is fetched
                 if (!response.ok) {
                     throw new Error(`HTTP error! Status: ${response.status}`);
                 }
-    
+
                 const result = await response.json();
-    
-                console.log("API Response:", result); //  Debugging response
-    
-                // Validate response structure
+
                 if (result.geminiAnalysis) {
                     sessionStorage.setItem('summary', result.geminiAnalysis);
                     setSummary(result.geminiAnalysis);
-                } else {
-                    throw new Error("geminiAnalysis not found in response");
                 }
-    
-                if (result.questions) {
-                    try {
-                        console.log("Raw Questions:", result.questions); // ✅ Debugging questions response
-    
-                        // Ensure result.questions is a proper JSON array
-                        if (Array.isArray(result.questions)) {
-                            result.questions.forEach((question, index) => {
-                                sessionStorage.setItem(`question${index + 1}`, question);
-                            });
-                        } else {
-                            console.error("Questions format is incorrect:", result.questions);
-                        }
-                    } catch (error) {
-                        console.error("Error parsing questions JSON:", error);
+                const allQuestions = result.questions;
+                try {
+                    const jsonMatch = allQuestions.match(/\[.*\]/s);
+
+                    if (jsonMatch) {
+                        const validJson = jsonMatch[0];
+                        const questionsArray = JSON.parse(validJson);
+                        questionsArray.forEach((question, index) => {
+                            sessionStorage.setItem(`question${index + 1}`, question);
+                        });
+                    } else {
+                        console.error("No valid JSON array found.");
                     }
-                } else {
-                    console.warn("No questions found in API response.");
+                } catch (error) {
+                    console.error("Error parsing JSON:", error);
                 }
-    
             } catch (error) {
                 console.error("Error fetching analysis:", error);
                 setSummary(`Error fetching analysis: ${error.message}`);
             }
         };
-    
+
         fetchAnalysis();
     }, []);
-    
+
 
     const handleInterview = () => {
         navigate('/interview');
@@ -82,9 +72,9 @@ const Analyse = () => {
                 </div>
 
                 <div className="text-center mt-4">
-                    <button 
-                        className="btn btn-dark px-4 py-2 fw-bold" 
-                        onClick={handleInterview} 
+                    <button
+                        className="btn btn-dark px-4 py-2 fw-bold"
+                        onClick={handleInterview}
                         disabled={!summary}
                     >
                         Start Interview
