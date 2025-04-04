@@ -177,7 +177,7 @@ const handleLogin=async ()=>{
         <br/>
         <button className="btn btn-dark" onClick={handleVerify} disabled={verificationSent}>{verificationSent ? "Verification Email Sent..." : "Send Verification Link"} </button>
         <br/><br/>
-        <button className="btn btn-dark" onClick={handleLogin}>Login</button>
+        <button className="btn btn-dark" onClick={handleLogin} disabled={verificationSent}>Login</button>
       </div>
     )
   );
