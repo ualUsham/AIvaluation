@@ -72,7 +72,9 @@ const Home = () => {
       setVerificationSent(false); // Allow resending
 
     } catch (error) {
-      toast.error(`Error: ${error.message}`);
+      toast.error('Please try again later...',{
+        position: "top-center",
+      });
       setVerificationSent(false);
     }
   };
