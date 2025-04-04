@@ -4,7 +4,7 @@ This repository contains the frontend code for my interview app **AIvaluation**,
 
 **AIvaluation** : https://aivaluation.vercel.app . 
 
-I have deployed the backend separately on https://aivaluation.onrender.com . So, no need to set up for the backend.
+I have deployed the backend separately on Render platform. So, no need to set up for the backend.
 
 ## 🚀 Features
 - Upload your resume in .pdf
