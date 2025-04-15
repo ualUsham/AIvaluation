@@ -137,6 +137,7 @@ const Register = () => {
         </button>
 
         <div>* If you have registered already, please <Link to='/login'>Login</Link> here.</div>
+        <div>*use email: ualusham2656@gmail.com and password: testing123  to test this app.</div>
       </form>
     </div>
   );

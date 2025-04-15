@@ -106,7 +106,7 @@ const Login = () => {
 
         <div>* Not registered already? <Link to='/register' style={{textDecoration:'none'}}>Register</Link> here.</div>
         <div>*<Link to='' onClick={handlePasswordChange} style={{textDecoration:'none'}}> Forgot Password?</Link></div>
-
+        <div>* use email: ualusham2656@gmail.com and password: testing123  to test this app.</div>
       </form>
     </div>
   )
